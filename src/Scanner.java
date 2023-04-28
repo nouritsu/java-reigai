@@ -80,6 +80,9 @@ class Scanner {
                     add_token(TokenType.SLASH);
                 }
                 break;
+            case '"':
+                string();
+                break;
             // Ignore characters
             case '\r':
             case '\t':
@@ -94,6 +97,25 @@ class Scanner {
                 Reigai.error(line, "Unexpected Character");
                 break;
         }
+    }
+
+    private void string() {
+        while (peek() != '"' && !at_end()) { // go on till closing "
+            if (peek() == '\n') {
+                line++;
+            }
+            advance();
+        }
+
+        if (at_end()) { // closing " not encountered
+            Reigai.error(line, "Unterminated String");
+            return;
+        }
+
+        advance(); // closing " character
+
+        String literal = source.substring(start + 1, current - 1); // skip " characters
+        add_token(TokenType.STRING, literal);
     }
 
     private boolean match(char expected) {

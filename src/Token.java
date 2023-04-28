@@ -12,6 +12,7 @@ class Token {
     }
 
     public String toString() {
-        return type + " " + lexeme + " " + literal;
+        return String.format("type: %s\nlexeme: %s\nliteral: %s\n", type, lexeme, literal);
+        // return type + " " + lexeme + " " + literal;
     }
 }
