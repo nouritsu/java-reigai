@@ -92,9 +92,14 @@ class Scanner {
             case '\n':
                 line++;
                 break;
-            // If not a lexeme, raise error
+            // Numbers, Errors
             default:
-                Reigai.error(line, "Unexpected Character");
+                if (is_digit(c)) { // not using Character.isDigit() as only roman numbers are wanted
+                    number();
+                } else {
+                    Reigai.error(line, "Unexpected Character");
+                }
+
                 break;
         }
     }
@@ -118,6 +123,23 @@ class Scanner {
         add_token(TokenType.STRING, literal);
     }
 
+    private void number() {
+        while (is_digit(peek())) { // consume digits before .
+            advance();
+        }
+
+        if (peek() == '.' && is_digit(peek_next())) {
+            advance(); // consume the . if it exists
+
+            while (is_digit(peek())) {
+                advance(); // consume digits after .
+            }
+        }
+
+        add_token(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+
+    }
+
     private boolean match(char expected) {
         if (at_end()) {
             return false;
@@ -134,6 +156,17 @@ class Scanner {
             return '\0';
         }
         return source.charAt(current);
+    }
+
+    private char peek_next() {
+        if (current + 1 >= source.length()) {
+            return '\0';
+        }
+        return source.charAt(current + 1);
+    }
+
+    private boolean is_digit(char c) {
+        return c >= '0' && c <= '9';
     }
 
     boolean at_end() {
