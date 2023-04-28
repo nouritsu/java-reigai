@@ -56,10 +56,33 @@ class Scanner {
             case '*':
                 add_token(TokenType.STAR);
                 break;
+            case '!':
+                add_token(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+                break;
+            case '=':
+                add_token(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+                break;
+            case '<':
+                add_token(match('=') ? TokenType.LESSER_EQUAL : TokenType.LESSER);
+                break;
+            case '>':
+                add_token(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+                break;
             default:
                 Reigai.error(line, "Unexpected Character");
                 break;
         }
+    }
+
+    private boolean match(char expected) {
+        if (at_end()) {
+            return false;
+        }
+        if (source.charAt(current) != expected) {
+            return false;
+        }
+        current++;
+        return true;
     }
 
     boolean at_end() {
