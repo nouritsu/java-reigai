@@ -80,6 +80,15 @@ class Scanner {
                     add_token(TokenType.SLASH);
                 }
                 break;
+            // Ignore characters
+            case '\r':
+            case '\t':
+            case ' ':
+                break;
+            // New lines
+            case '\n':
+                line++;
+                break;
             // If not a lexeme, raise error
             default:
                 Reigai.error(line, "Unexpected Character");
@@ -98,7 +107,7 @@ class Scanner {
         return true;
     }
 
-    private char peek() {
+    private char peek() { // Advance without consuming next character
         if (at_end()) {
             return '\0';
         }
@@ -109,7 +118,7 @@ class Scanner {
         return current >= source.length();
     }
 
-    private char advance() {
+    private char advance() { // Consume next character
         return source.charAt(current++);
     }
 
