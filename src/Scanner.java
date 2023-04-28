@@ -26,6 +26,7 @@ class Scanner {
     private void scan_token() {
         char c = advance();
         switch (c) {
+            // Single character lexemes
             case '(':
                 add_token(TokenType.LEFT_PAREN);
                 break;
@@ -56,6 +57,7 @@ class Scanner {
             case '*':
                 add_token(TokenType.STAR);
                 break;
+            // Possible double character lexemes
             case '!':
                 add_token(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
                 break;
@@ -68,6 +70,17 @@ class Scanner {
             case '>':
                 add_token(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
                 break;
+            // Comment lexeme
+            case '/':
+                if (match('/')) {
+                    while (peek() != '\n' && !at_end()) {
+                        advance();
+                    }
+                } else {
+                    add_token(TokenType.SLASH);
+                }
+                break;
+            // If not a lexeme, raise error
             default:
                 Reigai.error(line, "Unexpected Character");
                 break;
@@ -83,6 +96,13 @@ class Scanner {
         }
         current++;
         return true;
+    }
+
+    private char peek() {
+        if (at_end()) {
+            return '\0';
+        }
+        return source.charAt(current);
     }
 
     boolean at_end() {
