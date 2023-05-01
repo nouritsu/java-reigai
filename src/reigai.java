@@ -24,7 +24,7 @@ public class Reigai {
         BufferedReader reader = new BufferedReader(input);
 
         while (true) {
-            System.out.print("> ");
+            System.out.print("reiPL > ");
             String line = reader.readLine();
             if (line == null) {
                 break;
