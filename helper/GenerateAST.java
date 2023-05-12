@@ -25,12 +25,17 @@ public class GenerateAST {
         writer.println();
         writer.println("abstract class " + base_name + " {");
 
+        define_visitor(writer, base_name, types);
+
         for (String type : types) {
             String class_name = type.split(":")[0].trim();
             String fields = type.split(":")[1].trim();
 
             define_type(writer, base_name, class_name, fields);
         }
+
+        writer.println();
+        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
 
         writer.println("}");
         writer.close();
@@ -47,11 +52,33 @@ public class GenerateAST {
         writer.println("        }"); // Constructor body
 
         writer.println();
+        writer.println("        @Override");
+        writer.println("        <R> R accept(Visitor<R> visitor){");
+        writer.println("                return visitor.visit_" + class_name.toLowerCase() + "_"
+                + base_name.toLowerCase() + "(this);");
+        writer.println("        }");
+
+        writer.println();
         for (String field : fields) { // Fields
             writer.println("        final " + field + ";");
         }
 
         writer.println("    }");
 
+    }
+
+    private static void define_visitor(PrintWriter writer, String base_name, List<String> types) {
+        writer.println("    interface Visitor<R> {");
+
+        for (String type : types) {
+            String type_name = type.split(":")[0].trim();
+            writer.println(
+                    "        R visit_" + type_name.toLowerCase() + "_" + base_name.toLowerCase() + "(" + type_name + " "
+                            + base_name.toLowerCase()
+                            + ");");
+
+        }
+
+        writer.println("    }");
     }
 }
