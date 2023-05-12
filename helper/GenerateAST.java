@@ -21,7 +21,7 @@ public class GenerateAST {
         String path = output_dir + "/" + base_name + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("import java.util.List;");
+        // writer.println("import java.util.List;");
         writer.println();
         writer.println("abstract class " + base_name + " {");
 
