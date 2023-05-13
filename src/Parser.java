@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.ArrayList;
 
 class Parser {
     private static class ParseError extends RuntimeException {
@@ -11,16 +12,34 @@ class Parser {
         this.tokens = tokens;
     }
 
-    Expr parse() {
-        try {
-            return expression();
-        } catch (ParseError error) {
-            return null;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while (!is_at_end()) {
+            statements.add(statement());
         }
+        return statements;
     }
 
     private Expr expression() {
         return equality();
+    }
+
+    private Stmt statement() {
+        if (match(TokenType.PRINT))
+            return print_statement();
+        return expression_statement();
+    }
+
+    private Stmt print_statement() {
+        Expr value = expression();
+        consume(TokenType.SEMICOLON, "Expect ';' after value.");
+        return new Stmt.Print(value);
+    }
+
+    private Stmt expression_statement() {
+        Expr value = expression();
+        consume(TokenType.SEMICOLON, "Expect ';' after expression.");
+        return new Stmt.Expression(value);
     }
 
     private Expr equality() {

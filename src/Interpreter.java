@@ -1,9 +1,12 @@
-class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
 
-    void interpret(Expr expr) {
+class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expr);
-            System.out.println(stringify(value));
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Reigai.runtime_error(error);
         }
@@ -116,6 +119,23 @@ class Interpreter implements Expr.Visitor<Object> {
 
     private Object evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
+    }
+
+    @Override
+    public Void visit_expression_stmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visit_print_stmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
     }
 
     private String stringify(Object object) {

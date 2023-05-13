@@ -57,12 +57,12 @@ public class Reigai {
         List<Token> tokens = scanner.scan_tokens();
 
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        List<Stmt> statements = parser.parse();
 
         if (had_error)
             return;
 
-        interpreter.interpret(expression);
+        interpreter.interpret(statements);
     }
 
     static void error(int line, String message) {
