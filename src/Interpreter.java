@@ -1,8 +1,17 @@
 class Interpreter implements Expr.Visitor<Object> {
 
+    void interpret(Expr expr) {
+        try {
+            Object value = evaluate(expr);
+            System.out.println(stringify(value));
+        } catch (RuntimeError error) {
+            Reigai.runtime_error(error);
+        }
+    }
+
     @Override
     public Object visit_literal_expr(Expr.Literal expr) {
-        return expr.value;
+        return expr.value; // no need to run evaluate() as it is atomic
     }
 
     @Override
@@ -12,7 +21,7 @@ class Interpreter implements Expr.Visitor<Object> {
 
     @Override
     public Object visit_unary_expr(Expr.Unary expr) {
-        Object right = expr.right;
+        Object right = evaluate(expr.right);
 
         switch (expr.operator.type) {
             case MINUS:
@@ -48,8 +57,8 @@ class Interpreter implements Expr.Visitor<Object> {
 
     @Override
     public Object visit_binary_expr(Expr.Binary expr) {
-        Object left = expr.left;
-        Object right = expr.right;
+        Object left = evaluate(expr.left);
+        Object right = evaluate(expr.right);
 
         switch (expr.operator.type) {
             // COMPARISON
@@ -109,4 +118,16 @@ class Interpreter implements Expr.Visitor<Object> {
         return expr.accept(this);
     }
 
+    private String stringify(Object object) {
+        if (object == null)
+            return "nil";
+        if (object instanceof Double) {
+            String text = object.toString();
+            if (text.endsWith(".0")) {
+                text = text.substring(0, text.length() - 2);
+            }
+            return text;
+        }
+        return object.toString();
+    }
 }
