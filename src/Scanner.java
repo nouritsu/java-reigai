@@ -58,7 +58,7 @@ class Scanner {
                 add_token(TokenType.LEFT_BRACE);
                 break;
             case '}':
-                add_token(TokenType.LEFT_BRACE);
+                add_token(TokenType.RIGHT_BRACE);
                 break;
             case ',':
                 add_token(TokenType.COMMA);
