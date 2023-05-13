@@ -16,12 +16,25 @@ class Interpreter implements Expr.Visitor<Object> {
 
         switch (expr.operator.type) {
             case MINUS:
+                check_number_operand(expr.operator, right);
                 return -(double) right;
             case BANG:
                 return !is_truthy(right);
             default: // Unreachable
                 return null;
         }
+    }
+
+    private void check_number_operand(Token operator, Object operand) {
+        if (operand instanceof Double)
+            return;
+        throw new RuntimeError(operator, "Operand must be a number.");
+    }
+
+    private void check_number_operands(Token operator, Object left, Object right) {
+        if (left instanceof Double && right instanceof Double)
+            return;
+        throw new RuntimeError(operator, "Operands must be numbers.");
     }
 
     private boolean is_truthy(Object object) {
@@ -41,12 +54,16 @@ class Interpreter implements Expr.Visitor<Object> {
         switch (expr.operator.type) {
             // COMPARISON
             case GREATER:
+                check_number_operands(expr.operator, left, right);
                 return (Double) left > (Double) right;
             case GREATER_EQUAL:
+                check_number_operands(expr.operator, left, right);
                 return (Double) left >= (Double) right;
             case LESSER:
+                check_number_operands(expr.operator, left, right);
                 return (Double) left < (Double) right;
             case LESSER_EQUAL:
+                check_number_operands(expr.operator, left, right);
                 return (Double) left <= (Double) right;
 
             // EQUALITY
@@ -57,6 +74,7 @@ class Interpreter implements Expr.Visitor<Object> {
 
             // ARITHMETIC
             case MINUS:
+                check_number_operands(expr.operator, left, right);
                 return (double) left - (double) right;
             case PLUS:
                 if (left instanceof Double && right instanceof Double) {
@@ -65,10 +83,13 @@ class Interpreter implements Expr.Visitor<Object> {
                 if (left instanceof String && right instanceof String) {
                     return (String) left + (String) right;
                 }
-                break;
+
+                throw new RuntimeError(expr.operator, "Operands must be two numbers OR two strings.");
             case SLASH:
+                check_number_operands(expr.operator, left, right);
                 return (double) left / (double) right;
             case STAR:
+                check_number_operands(expr.operator, left, right);
                 return (double) left * (double) right;
             default: // Unreachable
                 return null;
