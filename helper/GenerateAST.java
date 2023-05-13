@@ -11,20 +11,24 @@ public class GenerateAST {
         }
         String output_dir = args[0];
         define_ast(output_dir, "Expr", Arrays.asList(
+                "Assign     : Token name, Expr value",
                 "Binary     : Expr left, Token operator, Expr right",
                 "Grouping   : Expr expression",
                 "Literal    : Object value",
-                "Unary      : Token operator, Expr right"));
+                "Unary      : Token operator, Expr right",
+                "Variable   : Token name"));
         define_ast(output_dir, "Stmt", Arrays.asList(
+                "Block          : List<Stmt> statements",
                 "Expression     : Expr expression",
-                "Print      : Expr expression"));
+                "Print          : Expr expression",
+                "Var            : Token name, Expr initializer"));
     }
 
     private static void define_ast(String output_dir, String base_name, List<String> types) throws IOException {
         String path = output_dir + "/" + base_name + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        // writer.println("import java.util.List;");
+        writer.println("import java.util.List;");
         writer.println();
         writer.println("abstract class " + base_name + " {");
 
