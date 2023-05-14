@@ -1,3 +1,4 @@
+import java.util.List;
 
 abstract class Expr {
     interface Visitor<R> {
@@ -5,6 +6,7 @@ abstract class Expr {
         R visit_binary_expr(Binary expr);
         R visit_grouping_expr(Grouping expr);
         R visit_literal_expr(Literal expr);
+        R visit_logical_expr(Logical expr);
         R visit_unary_expr(Unary expr);
         R visit_variable_expr(Variable expr);
     }
@@ -61,6 +63,22 @@ abstract class Expr {
         }
 
         final Object value;
+    }
+    static class Logical extends Expr {
+        Logical(Expr left, Token operator, Expr right) {
+            this.left = left;
+            this.operator = operator;
+            this.right = right;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor){
+                return visitor.visit_logical_expr(this);
+        }
+
+        final Expr left;
+        final Token operator;
+        final Expr right;
     }
     static class Unary extends Expr {
         Unary(Token operator, Expr right) {

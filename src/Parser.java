@@ -36,11 +36,27 @@ class Parser {
     }
 
     private Stmt statement() {
+        if (match(TokenType.IF)) {
+            return if_statement();
+        }
         if (match(TokenType.PRINT))
             return print_statement();
         if (match(TokenType.LEFT_BRACE))
             return new Stmt.Block(block());
         return expression_statement();
+    }
+
+    private Stmt if_statement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+        Expr condition = expression();
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+
+        Stmt then_branch = statement();
+        Stmt else_branch = null;
+        if (match(TokenType.ELSE)) {
+            else_branch = statement();
+        }
+        return new Stmt.If(condition, then_branch, else_branch);
     }
 
     private Stmt print_statement() {
@@ -79,7 +95,7 @@ class Parser {
     }
 
     private Expr assignment() {
-        Expr expr = equality();
+        Expr expr = or();
 
         if (match(TokenType.EQUAL)) {
             Token equals = previous();
@@ -91,6 +107,30 @@ class Parser {
             }
             error(equals, "Invalid assignment target.");
         }
+        return expr;
+    }
+
+    private Expr or() {
+        Expr expr = and();
+
+        while (match(TokenType.OR)) {
+            Token operator = previous();
+            Expr right = and();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr and() {
+        Expr expr = equality();
+
+        while (match(TokenType.AND)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
         return expr;
     }
 

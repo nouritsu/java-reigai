@@ -19,6 +19,22 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visit_logical_expr(Expr.Logical expr) {
+        Object left = evaluate(expr.left);
+
+        if (expr.operator.type == TokenType.OR) {
+            if (is_truthy(left))
+                return left;
+        } else {
+            if (!is_truthy(left)) {
+                return left;
+            }
+        }
+
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visit_variable_expr(Expr.Variable expr) {
         return environment.get(expr.name);
     }
@@ -159,6 +175,16 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visit_expression_stmt(Stmt.Expression stmt) {
         evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visit_if_stmt(Stmt.If stmt) {
+        if (is_truthy(evaluate(stmt.condition))) {
+            execute(stmt.then_branch);
+        } else if (stmt.else_branch != null) {
+            execute(stmt.else_branch);
+        }
         return null;
     }
 
