@@ -1,6 +1,6 @@
 import java.util.List;
-import java.beans.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class Parser {
     private static class ParseError extends RuntimeException {
@@ -37,9 +37,10 @@ class Parser {
     }
 
     private Stmt statement() {
-        if (match(TokenType.IF)) {
+        if (match(TokenType.FOR))
+            return for_statement();
+        if (match(TokenType.IF))
             return if_statement();
-        }
         if (match(TokenType.PRINT))
             return print_statement();
         if (match(TokenType.WHILE))
@@ -47,6 +48,47 @@ class Parser {
         if (match(TokenType.LEFT_BRACE))
             return new Stmt.Block(block());
         return expression_statement();
+    }
+
+    private Stmt for_statement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+        Stmt initializer;
+        if (match(TokenType.SEMICOLON)) {
+            initializer = null;
+        } else if (match(TokenType.VAR)) {
+            initializer = var_declaration();
+        } else {
+            initializer = expression_statement();
+        }
+
+        Expr condition = null;
+        if (!check(TokenType.SEMICOLON)) {
+            condition = expression();
+        }
+        consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+        Expr increment = null;
+        if (!check(TokenType.RIGHT_BRACE)) {
+            increment = expression();
+        }
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+        Stmt body = statement();
+
+        if (increment != null) {
+            body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
+        }
+
+        if (condition == null) {
+            condition = new Expr.Literal(true);
+        }
+        body = new Stmt.While(condition, body);
+
+        if (initializer != null) {
+            body = new Stmt.Block(Arrays.asList(initializer, body));
+        }
+        return body;
     }
 
     private Stmt if_statement() {
