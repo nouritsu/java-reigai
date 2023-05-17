@@ -23,7 +23,8 @@ public class GenerateAST {
                 "Expression     : Expr expression",
                 "If             : Expr condition, Stmt then_branch, Stmt else_branch",
                 "Print          : Expr expression",
-                "Var            : Token name, Expr initializer"));
+                "Var            : Token name, Expr initializer",
+                "While          : Expr condition, Stmt body"));
     }
 
     private static void define_ast(String output_dir, String base_name, List<String> types) throws IOException {

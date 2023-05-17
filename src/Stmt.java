@@ -7,6 +7,7 @@ abstract class Stmt {
         R visit_if_stmt(If stmt);
         R visit_print_stmt(Print stmt);
         R visit_var_stmt(Var stmt);
+        R visit_while_stmt(While stmt);
     }
     static class Block extends Stmt {
         Block(List<Stmt> statements) {
@@ -73,6 +74,20 @@ abstract class Stmt {
 
         final Token name;
         final Expr initializer;
+    }
+    static class While extends Stmt {
+        While(Expr condition, Stmt body) {
+            this.condition = condition;
+            this.body = body;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor){
+                return visitor.visit_while_stmt(this);
+        }
+
+        final Expr condition;
+        final Stmt body;
     }
 
     abstract <R> R accept(Visitor<R> visitor);

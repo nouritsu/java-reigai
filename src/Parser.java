@@ -1,4 +1,5 @@
 import java.util.List;
+import java.beans.Statement;
 import java.util.ArrayList;
 
 class Parser {
@@ -41,6 +42,8 @@ class Parser {
         }
         if (match(TokenType.PRINT))
             return print_statement();
+        if (match(TokenType.WHILE))
+            return while_statement();
         if (match(TokenType.LEFT_BRACE))
             return new Stmt.Block(block());
         return expression_statement();
@@ -49,7 +52,7 @@ class Parser {
     private Stmt if_statement() {
         consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
         Expr condition = expression();
-        consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after 'if' condition.");
 
         Stmt then_branch = statement();
         Stmt else_branch = null;
@@ -63,6 +66,15 @@ class Parser {
         Expr value = expression();
         consume(TokenType.SEMICOLON, "Expect ';' after value.");
         return new Stmt.Print(value);
+    }
+
+    private Stmt while_statement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+        Expr condition = expression();
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after 'while' loop.");
+        Stmt body = statement();
+
+        return new Stmt.While(condition, body);
     }
 
     private Stmt var_declaration() {
