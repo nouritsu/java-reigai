@@ -22,6 +22,66 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 return "<native fun>";
             }
         });
+
+        globals.define("len", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 1;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                if (arguments.get(0) instanceof Double) {
+                    return null;
+                }
+                return arguments.get(0).toString().length();
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
+
+        globals.define("floor", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 1;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                if (arguments.get(0) instanceof Double) {
+                    return Math.floor((Double) arguments.get(0));
+                }
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
+
+        globals.define("ceil", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 1;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                if (arguments.get(0) instanceof Double) {
+                    return Math.ceil((Double) arguments.get(0));
+                }
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
     }
 
     void interpret(List<Stmt> statements) {
