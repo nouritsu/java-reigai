@@ -141,9 +141,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case PLUS:
                 if (left instanceof Double && right instanceof Double) {
                     return (double) left + (double) right;
-                } else {
-                    return left.toString() + right.toString();
                 }
+                return left.toString() + right.toString();
             case SLASH:
                 check_number_operands(expr.operator, left, right);
                 return (double) left / (double) right;
