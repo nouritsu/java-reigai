@@ -120,6 +120,26 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 return "<native fun>";
             }
         });
+
+        globals.define("pow", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 2;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                if (arguments.get(0) instanceof Double && arguments.get(1) instanceof Double) {
+                    return Math.pow((Double) arguments.get(0), (Double) arguments.get(1));
+                }
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
     }
 
     void interpret(List<Stmt> statements) {
