@@ -77,6 +77,7 @@ class Scanner {
                 break;
             case '*':
                 add_token(TokenType.STAR);
+                break;
             case '%':
                 add_token(TokenType.MOD);
                 break;
