@@ -1,7 +1,28 @@
 import java.util.List;
+import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-    private Environment environment = new Environment(null);
+    final Environment globals = new Environment(null);
+    private Environment environment = globals;
+
+    Interpreter() {
+        globals.define("clock", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 0;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                return (double) System.currentTimeMillis() / 1000.0;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
+    }
 
     void interpret(List<Stmt> statements) {
         try {
@@ -137,6 +158,27 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
     }
 
+    @Override
+    public Object visit_call_expr(Expr.Call expr) {
+        Object callee = evaluate(expr.callee);
+
+        List<Object> arguments = new ArrayList<>();
+        for (Expr argument : expr.arguments) {
+            arguments.add(evaluate(argument));
+        }
+
+        if (!(callee instanceof ReigaiCallable)) {
+            throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+        }
+
+        ReigaiCallable function = (ReigaiCallable) callee;
+        if (arguments.size() != function.arity()) {
+            throw new RuntimeError(expr.paren,
+                    "Expected " + function.arity() + " arguments, found " + arguments.size() + ".");
+        }
+        return function.call(this, arguments);
+    }
+
     private boolean is_equal(Object a, Object b) {
         if (a == null && b == null)
             return true;
@@ -154,7 +196,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         stmt.accept(this);
     }
 
-    private void execute_block(List<Stmt> statements, Environment environment) {
+    public void execute_block(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
         try {
             this.environment = environment; // "Go" up a scope
@@ -175,6 +217,13 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visit_expression_stmt(Stmt.Expression stmt) {
         evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visit_function_stmt(Stmt.Function stmt) {
+        ReigaiFunction function = new ReigaiFunction(stmt);
+        environment.define(stmt.name.lexeme, function);
         return null;
     }
 
