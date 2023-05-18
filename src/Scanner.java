@@ -123,7 +123,7 @@ class Scanner {
                 } else if (is_alpha(c)) {
                     identifier();
                 } else {
-                    Reigai.error(line, "Unexpected Character");
+                    Reigai.error(line, "Unexpected character.");
                 }
 
                 break;
