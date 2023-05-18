@@ -2,7 +2,7 @@ enum TokenType {
     LEFT_PAREN, RIGHT_PAREN, // Parenthesis
     LEFT_BRACE, RIGHT_BRACE, // Braces
     COMMA, DOT, SEMICOLON, // Punctuation
-    MINUS, PLUS, SLASH, STAR, // Math, Assignment
+    MINUS, PLUS, SLASH, STAR, MOD, // Math, Assignment
     EQUAL, VAR, // Assignment / Initialization
 
     // Comparison Operators

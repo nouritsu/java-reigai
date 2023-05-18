@@ -77,6 +77,8 @@ class Scanner {
                 break;
             case '*':
                 add_token(TokenType.STAR);
+            case '%':
+                add_token(TokenType.MOD);
                 break;
             // Possible double character lexemes
             case '!':

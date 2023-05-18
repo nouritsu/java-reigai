@@ -149,6 +149,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case STAR:
                 check_number_operands(expr.operator, left, right);
                 return (double) left * (double) right;
+            case MOD:
+                check_number_operands(expr.operator, left, right);
+                return (double) left % (double) right;
             default: // Unreachable
                 return null;
         }
