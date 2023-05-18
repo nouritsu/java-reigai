@@ -19,7 +19,11 @@ class ReigaiFunction implements ReigaiCallable {
             environment.define(declaration.params.get(i).lexeme, arguments.get(i));
         }
 
-        interpreter.execute_block(declaration.body, environment);
+        try {
+            interpreter.execute_block(declaration.body, environment);
+        } catch (Return ret) {
+            return ret.value;
+        }
         return null;
     }
 

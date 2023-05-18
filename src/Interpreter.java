@@ -245,6 +245,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visit_return_stmt(Stmt.Return stmt) {
+        Object value = null;
+        if (stmt.value != null)
+            value = evaluate(stmt.value);
+        throw new Return(value);
+    }
+
+    @Override
     public Void visit_var_stmt(Stmt.Var stmt) {
         Object value = null;
         if (stmt.initializer != null) {
