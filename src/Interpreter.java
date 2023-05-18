@@ -43,6 +43,44 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
         });
 
+        globals.define("round", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 1;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                if (arguments.get(0) instanceof Double) {
+                    return Math.round((Double) arguments.get(0));
+                }
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
+        globals.define("abs", new ReigaiCallable() {
+            @Override
+            public int arity() {
+                return 1;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                if (arguments.get(0) instanceof Double) {
+                    return Math.abs((Double) arguments.get(0));
+                }
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fun>";
+            }
+        });
         globals.define("floor", new ReigaiCallable() {
             @Override
             public int arity() {
