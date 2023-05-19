@@ -376,7 +376,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visit_class_stmt(Stmt.Class stmt) {
         environment.define(stmt.name.lexeme, null);
-        ReigaiClass cl = new ReigaiClass(stmt.name.lexeme);
+
+        Map<String, ReigaiFunction> methods = new HashMap<>();
+        for (Stmt.Function method : stmt.methods) {
+            ReigaiFunction function = new ReigaiFunction(method, environment);
+            methods.put(method.name.lexeme, function);
+        }
+
+        ReigaiClass cl = new ReigaiClass(stmt.name.lexeme, methods);
         environment.assign(stmt.name, cl);
         return null;
     }
