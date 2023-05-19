@@ -322,6 +322,18 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         throw new RuntimeError(expr.name, "Only instances have properties.");
     }
 
+    public Object visit_set_expr(Expr.Set expr) {
+        Object object = evaluate(expr.object);
+
+        if (!(object instanceof ReigaiInstance)) {
+            throw new RuntimeError(expr.name, "Only instances have fields.");
+        }
+
+        Object value = evaluate(expr.value);
+        ((ReigaiInstance) object).set(expr.name, value);
+        return value;
+    }
+
     private boolean is_equal(Object a, Object b) {
         if (a == null && b == null)
             return true;

@@ -134,6 +134,13 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visit_set_expr(Expr.Set expr) {
+        resolve(expr.value);
+        resolve(expr.object);
+        return null;
+    }
+
+    @Override
     public Void visit_grouping_expr(Expr.Grouping expr) {
         resolve(expr.expression);
         return null;
