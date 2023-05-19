@@ -5,11 +5,11 @@ ifeq (run,$(firstword $(MAKECMDGOALS)))
   $(eval $(RUN_ARGS):;@:)
 endif
 
-build: ./src/*.java
+build: ./src/*.java clean
 	javac ./src/*.java -d "./bin/"
 
 run: build
 	java -cp './bin' 'Reigai' $(RUN_ARGS)
 
-clean: build
+clean: 
 	del ".\bin\*.class"
