@@ -339,7 +339,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visit_function_stmt(Stmt.Function stmt) {
-        ReigaiFunction function = new ReigaiFunction(stmt);
+        ReigaiFunction function = new ReigaiFunction(stmt, environment);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
