@@ -37,11 +37,15 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         declare(stmt.name);
         define(stmt.name);
 
+        begin_scope();
+        scopes.peek().put("this", true);
+
         for (Stmt.Function method : stmt.methods) {
             FunctionType declaration = FunctionType.METHOD;
             resolve_function(method, declaration);
         }
 
+        end_scope();
         return null;
     }
 
@@ -144,6 +148,12 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     public Void visit_set_expr(Expr.Set expr) {
         resolve(expr.value);
         resolve(expr.object);
+        return null;
+    }
+
+    @Override
+    public Void visit_this_expr(Expr.This expr) {
+        resolve_local(expr, expr.keyword);
         return null;
     }
 

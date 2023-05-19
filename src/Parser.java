@@ -332,9 +332,10 @@ class Parser {
             return new Expr.Literal(true);
         if (match(TokenType.NIL))
             return new Expr.Literal(null);
-
         if (match(TokenType.NUMBER, TokenType.STRING))
             return new Expr.Literal(previous().literal);
+        if (match(TokenType.THIS))
+            return new Expr.This(previous());
         if (match(TokenType.IDENTIFIER))
             return new Expr.Variable(previous());
         if (match(TokenType.LEFT_PAREN)) {

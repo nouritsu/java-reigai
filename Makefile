@@ -11,5 +11,8 @@ build: ./src/*.java clean
 run: build
 	java -cp './bin' 'Reigai' $(RUN_ARGS)
 
+ast:
+	java ".\helper\GenerateAST.java" ".\src"
+
 clean: 
 	del ".\bin\*.class"

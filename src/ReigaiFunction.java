@@ -29,6 +29,12 @@ class ReigaiFunction implements ReigaiCallable {
         return null;
     }
 
+    ReigaiFunction bind(ReigaiInstance instance) {
+        Environment environment = new Environment(closure);
+        environment.define("this", instance);
+        return new ReigaiFunction(declaration, environment);
+    }
+
     @Override
     public String toString() {
         return "<fun " + declaration.name.lexeme + ">";

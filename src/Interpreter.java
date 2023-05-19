@@ -314,6 +314,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return function.call(this, arguments);
     }
 
+    @Override
     public Object visit_get_expr(Expr.Get expr) {
         Object object = evaluate(expr.object);
         if (object instanceof ReigaiInstance) {
@@ -322,6 +323,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         throw new RuntimeError(expr.name, "Only instances have properties.");
     }
 
+    @Override
     public Object visit_set_expr(Expr.Set expr) {
         Object object = evaluate(expr.object);
 
@@ -332,6 +334,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object value = evaluate(expr.value);
         ((ReigaiInstance) object).set(expr.name, value);
         return value;
+    }
+
+    @Override
+    public Object visit_this_expr(Expr.This expr) {
+        return lookup_variable(expr.keyword, expr);
     }
 
     private boolean is_equal(Object a, Object b) {
