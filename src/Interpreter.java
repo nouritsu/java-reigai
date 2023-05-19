@@ -9,140 +9,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private final Map<Expr, Integer> locals = new HashMap<>();
 
     Interpreter() {
-        globals.define("clock", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 0;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                return (double) System.currentTimeMillis() / 1000.0;
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
-
-        globals.define("len", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 1;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (arguments.get(0) instanceof Double) {
-                    return null;
-                }
-                return arguments.get(0).toString().length();
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
-
-        globals.define("round", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 1;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (arguments.get(0) instanceof Double) {
-                    return Math.round((Double) arguments.get(0));
-                }
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
-        globals.define("abs", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 1;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (arguments.get(0) instanceof Double) {
-                    return Math.abs((Double) arguments.get(0));
-                }
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
-        globals.define("floor", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 1;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (arguments.get(0) instanceof Double) {
-                    return Math.floor((Double) arguments.get(0));
-                }
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
-
-        globals.define("ceil", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 1;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (arguments.get(0) instanceof Double) {
-                    return Math.ceil((Double) arguments.get(0));
-                }
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
-
-        globals.define("pow", new ReigaiCallable() {
-            @Override
-            public int arity() {
-                return 2;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (arguments.get(0) instanceof Double && arguments.get(1) instanceof Double) {
-                    return Math.pow((Double) arguments.get(0), (Double) arguments.get(1));
-                }
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "<native fun>";
-            }
-        });
+        // Native Functions
+        globals.define("clock", NativeFunctions.Clock);
+        globals.define("len", NativeFunctions.Len);
+        globals.define("round", NativeFunctions.Round);
+        globals.define("abs", NativeFunctions.Abs);
+        globals.define("floor", NativeFunctions.Floor);
+        globals.define("ceil", NativeFunctions.Ceil);
+        globals.define("pow", NativeFunctions.Pow);
     }
 
     void interpret(List<Stmt> statements) {
