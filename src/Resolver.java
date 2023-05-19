@@ -32,6 +32,13 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visit_class_stmt(Stmt.Class stmt) {
+        declare(stmt.name);
+        define(stmt.name);
+        return null;
+    }
+
+    @Override
     public Void visit_expression_stmt(Stmt.Expression stmt) {
         resolve(stmt.expression);
         return null;
@@ -117,6 +124,12 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             resolve(argument);
         }
 
+        return null;
+    }
+
+    @Override
+    public Void visit_get_expr(Expr.Get expr) {
+        resolve(expr.object);
         return null;
     }
 

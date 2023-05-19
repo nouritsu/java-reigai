@@ -5,6 +5,7 @@ abstract class Expr {
         R visit_assign_expr(Assign expr);
         R visit_binary_expr(Binary expr);
         R visit_call_expr(Call expr);
+        R visit_get_expr(Get expr);
         R visit_grouping_expr(Grouping expr);
         R visit_literal_expr(Literal expr);
         R visit_logical_expr(Logical expr);
@@ -56,6 +57,20 @@ abstract class Expr {
         final Expr callee;
         final Token paren;
         final List<Expr> arguments;
+    }
+    static class Get extends Expr {
+        Get(Expr object, Token name) {
+            this.object = object;
+            this.name = name;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor){
+                return visitor.visit_get_expr(this);
+        }
+
+        final Expr object;
+        final Token name;
     }
     static class Grouping extends Expr {
         Grouping(Expr expression) {

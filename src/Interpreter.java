@@ -314,6 +314,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return function.call(this, arguments);
     }
 
+    public Object visit_get_expr(Expr.Get expr) {
+        Object object = evaluate(expr.object);
+        if (object instanceof ReigaiInstance) {
+            return ((ReigaiInstance) object).get(expr.name);
+        }
+        throw new RuntimeError(expr.name, "Only instances have properties.");
+    }
+
     private boolean is_equal(Object a, Object b) {
         if (a == null && b == null)
             return true;
@@ -350,6 +358,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visit_block_stmt(Stmt.Block stmt) {
         execute_block(stmt.statements, new Environment(environment));
+        return null;
+    }
+
+    @Override
+    public Void visit_class_stmt(Stmt.Class stmt) {
+        environment.define(stmt.name.lexeme, null);
+        ReigaiClass cl = new ReigaiClass(stmt.name.lexeme);
+        environment.assign(stmt.name, cl);
         return null;
     }
 
