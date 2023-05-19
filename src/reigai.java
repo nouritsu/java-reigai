@@ -62,6 +62,12 @@ public class Reigai {
         if (had_error)
             return;
 
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
+        if (had_error)
+            return;
+
         interpreter.interpret(statements);
     }
 
