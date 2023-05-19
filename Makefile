@@ -10,3 +10,6 @@ build: ./src/*.java
 
 run: build
 	java -cp './bin' 'Reigai' $(RUN_ARGS)
+
+clean: build
+	del ".\bin\*.class"
