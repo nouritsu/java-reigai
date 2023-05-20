@@ -260,7 +260,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         Map<String, ReigaiFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
-            ReigaiFunction function = new ReigaiFunction(method, environment);
+            ReigaiFunction function = new ReigaiFunction(method, environment, method.name.lexeme.equals("init"));
             methods.put(method.name.lexeme, function);
         }
 
@@ -277,7 +277,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visit_function_stmt(Stmt.Function stmt) {
-        ReigaiFunction function = new ReigaiFunction(stmt, environment);
+        ReigaiFunction function = new ReigaiFunction(stmt, environment, false);
         environment.define(stmt.name.lexeme, function);
         return null;
     }

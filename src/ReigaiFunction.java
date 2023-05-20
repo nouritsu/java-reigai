@@ -3,10 +3,12 @@ import java.util.List;
 class ReigaiFunction implements ReigaiCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
+    private final boolean is_initializer;
 
-    ReigaiFunction(Stmt.Function declaration, Environment closure) {
+    ReigaiFunction(Stmt.Function declaration, Environment closure, boolean is_initializer) {
         this.declaration = declaration;
         this.closure = closure;
+        this.is_initializer = is_initializer;
     }
 
     @Override
@@ -24,15 +26,19 @@ class ReigaiFunction implements ReigaiCallable {
         try {
             interpreter.execute_block(declaration.body, environment);
         } catch (Return ret) {
-            return ret.value;
+            return is_initializer ? closure.get_at(0, "this") : ret.value;
         }
+
+        if (is_initializer)
+            return closure.get_at(0, "this");
+
         return null;
     }
 
     ReigaiFunction bind(ReigaiInstance instance) {
         Environment environment = new Environment(closure);
         environment.define("this", instance);
-        return new ReigaiFunction(declaration, environment);
+        return new ReigaiFunction(declaration, environment, is_initializer);
     }
 
     @Override

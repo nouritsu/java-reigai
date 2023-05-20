@@ -12,12 +12,18 @@ class ReigaiClass implements ReigaiCallable {
 
     @Override
     public int arity() {
-        return 0;
+        ReigaiFunction init = find_method("init");
+        if (init == null)
+            return 0;
+        return init.arity();
     }
 
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
         ReigaiInstance in = new ReigaiInstance(this);
+        ReigaiFunction init = find_method("init");
+        if (init != null)
+            init.bind(in).call(interpreter, arguments);
         return in;
     }
 
