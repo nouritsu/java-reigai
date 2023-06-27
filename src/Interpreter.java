@@ -211,6 +211,20 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visit_super_expr(Expr.Super expr) {
+        int distance = locals.get(expr);
+        ReigaiClass superclass = (ReigaiClass) environment.get_at(distance, "super");
+        ReigaiInstance object = (ReigaiInstance) environment.get_at(distance - 1, "this");
+        ReigaiFunction method = superclass.find_method(expr.method.lexeme);
+
+        if (method == null) {
+            throw new RuntimeError(expr.method, "Undefined property '" + expr.method.lexeme + "'.");
+        }
+
+        return method.bind(object);
+    }
+
+    @Override
     public Object visit_this_expr(Expr.This expr) {
         return lookup_variable(expr.keyword, expr);
     }
@@ -256,7 +270,20 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visit_class_stmt(Stmt.Class stmt) {
+        Object superclass = null;
+        if (stmt.superclass != null) {
+            superclass = evaluate(stmt.superclass);
+            if (!(superclass instanceof ReigaiClass)) {
+                throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
+            }
+        }
+
         environment.define(stmt.name.lexeme, null);
+
+        if (stmt.superclass != null) {
+            environment = new Environment(environment);
+            environment.define("super", superclass);
+        }
 
         Map<String, ReigaiFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
@@ -264,7 +291,12 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             methods.put(method.name.lexeme, function);
         }
 
-        ReigaiClass cl = new ReigaiClass(stmt.name.lexeme, methods);
+        ReigaiClass cl = new ReigaiClass(stmt.name.lexeme, (ReigaiClass) superclass, methods);
+
+        if (superclass != null) {
+            environment = environment.enclosing;
+        }
+
         environment.assign(stmt.name, cl);
         return null;
     }

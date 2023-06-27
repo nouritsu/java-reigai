@@ -137,5 +137,4 @@ class NativeFunctions {
             return "<native fun>";
         }
     };
-
 }

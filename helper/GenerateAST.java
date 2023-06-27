@@ -16,6 +16,7 @@ public class GenerateAST {
                 "Call       : Expr callee, Token paren, List<Expr> arguments",
                 "Get        : Expr object, Token name",
                 "Set        : Expr object, Token name, Expr value",
+                "Super      : Token keyword, Token method",
                 "This       : Token keyword",
                 "Grouping   : Expr expression",
                 "Literal    : Object value",
@@ -24,7 +25,7 @@ public class GenerateAST {
                 "Variable   : Token name"));
         define_ast(output_dir, "Stmt", Arrays.asList(
                 "Block          : List<Stmt> statements",
-                "Class          : Token name, List<Stmt.Function> methods",
+                "Class          : Token name, Expr.Variable superclass, List<Stmt.Function> methods",
                 "Expression     : Expr expression",
                 "Function       : Token name, List<Token> params, List<Stmt> body",
                 "If             : Expr condition, Stmt then_branch, Stmt else_branch",

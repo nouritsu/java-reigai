@@ -3,10 +3,12 @@ import java.util.Map;
 
 class ReigaiClass implements ReigaiCallable {
     final String name;
+    final ReigaiClass superclass;
     private final Map<String, ReigaiFunction> methods;
 
-    ReigaiClass(String name, Map<String, ReigaiFunction> methods) {
+    ReigaiClass(String name, ReigaiClass superclass, Map<String, ReigaiFunction> methods) {
         this.name = name;
+        this.superclass = superclass;
         this.methods = methods;
     }
 
@@ -28,7 +30,13 @@ class ReigaiClass implements ReigaiCallable {
     }
 
     ReigaiFunction find_method(String name) {
-        return methods.containsKey(name) ? methods.get(name) : null;
+        if (methods.containsKey(name)) {
+            return methods.get(name);
+        }
+        if (superclass != null) {
+            return superclass.find_method(name);
+        }
+        return null;
     }
 
     @Override
