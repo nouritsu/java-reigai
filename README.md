@@ -14,7 +14,7 @@ Calculating the 20th fibonacci number in python takes about `250ms`, it took Rei
 - Running command without file argument will run interpreter in REPL mode
 - If the file argument is provided, the file will be interpreted.
 
-You need to have a Java and Make installed.  
+You need to have Java and Make installed.  
 Tested on Windows and Linux.
 
 # Documentation
